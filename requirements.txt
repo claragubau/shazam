@@ -1,2 +1,7 @@
 numpy
 tqdm
+librosa
+pydub
+jupyter
+matplotlib
+ipykernel
