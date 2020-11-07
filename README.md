@@ -10,4 +10,5 @@ Install the requirements. We recommend to set an environment for isolation.
 python3 -m venv env   
 source env/bin/activate
 pip install -r requirements.lock
+python -m ipykernel install --user --name=myenv
 ```
