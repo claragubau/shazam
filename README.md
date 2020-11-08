@@ -20,7 +20,9 @@ Shazam is based on fingerprinting the audio using its frequencies. The main idea
 
 To work with frequencies we use the **DFT** (Discrete Fourier Transform) which turns data from time domain into frequency domain:
 
-![DFT-min](http://coding-geek.com/wp-content/uploads/2015/05/DFT-min.png)
+<div align="center">
+  <img src="http://coding-geek.com/wp-content/uploads/2015/05/DFT-min.png", width="30%"/>
+</div>
 
 In this formula:
 
@@ -34,38 +36,11 @@ In this formula:
 Note that there is the concept of window, this is used because if we transform the data info the frequency domain we loose all the information about time. To maintain some information we take chunks of data (using this sliding window) and transform that part. Then we know the mangnitude of frequencies that happen during that fragment of time. 
 
 
-
-
 <div align="center">
 <img src="./docs/spectogram.png", width="60%"/>
-  <br>
+ <br>
   Spectogram of <a href="https://www.youtube.com/watch?v=M9xMuPWAZW8&t=330s">Equation by Aphex Twin around minute 5:30</a>
 </div>
-
-
-More concretely, we will use the **FFT** (Fast Fourier Transform).  Why?
-
-Imagine that we want to process a three-minutes song at 44,1 kHz, computed with a 4096-sample window. With the original DFT we would have to compute 10.7 (44100/4096) DFT per second and each DFT needs 2*4096^2 operations, so in total 6.5 * 10^10, that would take days/monts to process. FFT requires 340 times less additions (1.43 * 10^11).
-
-**FFT computed using divide and conquer** (source Wikipedia)
-
-```python
-from cmath import *
-def fft(x):
-        N=len(x)
-        if N==1: return x
- 
-        even=fft([x[k] for k in range(0,N,2)])
-        odd= fft([x[k] for k in range(1,N,2)])
- 
-        M=N/2
-        l=[ even[k] + exp(-2j*pi*k/N)*odd[k] for k in range(M) ]
-        r=[ even[k] - exp(-2j*pi*k/N)*odd[k] for k in range(M) ]
- 
-        return l+r
-```
-
-
 
 ### Steps:
 
@@ -81,7 +56,7 @@ def fft(x):
 
    ![shazam_filtered_spectrogram-min](http://coding-geek.com/wp-content/uploads/2015/05/shazam_filtered_spectrogram-min.png)
 
-5. These key points are saved as a hash. Those hash values will be used in order to match the songs requested. 
+5. These key points are saved as hashes in a clever way (to make it time invariant): (keypoint_i, keypoint_j, delta_time). Finally, those hash values will be used in order to match the songs requested. 
 
 
 
